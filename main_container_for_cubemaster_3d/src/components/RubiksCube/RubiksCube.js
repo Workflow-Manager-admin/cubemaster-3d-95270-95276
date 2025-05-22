@@ -1,7 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import * as THREE from 'three';
 import Cubelet from './Cubelet';
 
 // Colors for each face when not specified (for interior cubelets)
@@ -17,20 +16,11 @@ const DEFAULT_COLOR = '#111111';
 const RubiksCube = ({ cubeState, rotation }) => {
   const groupRef = useRef();
   
-  // Target rotation state
-  const targetRotation = useRef({ x: 0, y: 0 });
-  
-  // Update target rotation when rotation prop changes
-  useEffect(() => {
-    targetRotation.current = rotation;
-  }, [rotation]);
-  
   // Use frame to apply smooth rotation animation
   useFrame(() => {
     if (groupRef.current) {
-      // Apply smooth damping to rotation
-      groupRef.current.rotation.y += (targetRotation.current.y - groupRef.current.rotation.y) * 0.1;
-      groupRef.current.rotation.x += (targetRotation.current.x - groupRef.current.rotation.x) * 0.1;
+      groupRef.current.rotation.y += (rotation.y - groupRef.current.rotation.y) * 0.1;
+      groupRef.current.rotation.x += (rotation.x - groupRef.current.rotation.x) * 0.1;
     }
   });
   
@@ -107,9 +97,9 @@ const RubiksCube = ({ cubeState, rotation }) => {
       <OrbitControls 
         enableZoom={true} 
         enablePan={true} 
-        enableRotate={true} 
+        enableRotate={true}
         minDistance={4}
-        maxDistance={12}
+        maxDistance={12} 
       />
     </>
   );
