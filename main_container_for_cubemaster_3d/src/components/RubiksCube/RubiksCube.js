@@ -101,12 +101,16 @@ const RubiksCube = ({ cubeState, rotation }) => {
   
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={0.8} castShadow />
       <group ref={groupRef}>
         {cubelets}
       </group>
-      <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
+      <OrbitControls 
+        enableZoom={true} 
+        enablePan={true} 
+        enableRotate={true} 
+        minDistance={4}
+        maxDistance={12}
+      />
     </>
   );
 };
