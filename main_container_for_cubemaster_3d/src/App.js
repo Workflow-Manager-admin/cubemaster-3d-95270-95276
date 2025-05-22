@@ -39,8 +39,19 @@ function App() {
 
       <main className="main-content">
         <div className="cube-container">
-          <Canvas shadows camera={{ position: [0, 0, 7], fov: 45 }}>
-            <Suspense fallback={null}>
+          <Canvas shadows dpr={[1, 2]}>
+            <Suspense fallback={
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+                color: 'white'
+              }}>
+                Loading...
+              </div>
+            }>
+              <PerspectiveCamera makeDefault position={[0, 0, 7]} fov={45} />
               <RubiksCube cubeState={cubeState} rotation={rotation} />
             </Suspense>
           </Canvas>
