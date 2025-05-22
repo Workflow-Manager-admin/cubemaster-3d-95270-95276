@@ -89,17 +89,30 @@ body {
 /* Controls container */
 .controls-container {
   background-color: var(--panel-bg);
-  padding: 24px;
+  padding: 16px;
   border-top: 1px solid var(--border-color);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (min-width: 992px) {
   .controls-container {
     width: 380px;
+    padding: 24px;
     border-top: none;
     border-left: 1px solid var(--border-color);
     overflow-y: auto;
     max-height: calc(100vh - 70px);
+  }
+}
+
+@media (max-width: 576px) {
+  .control-buttons, .face-buttons {
+    flex-direction: column;
+  }
+  
+  .control-btn, .face-btn {
+    flex: 1 1 100%;
   }
 }
 
