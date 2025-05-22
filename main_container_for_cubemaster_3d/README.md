@@ -1,82 +1,84 @@
-# Lightweight React Template for KAVIA
+# CubeMaster 3D
 
-This project provides a minimal React template with a clean, modern UI and minimal dependencies.
+A 3D interactive Rubik's Cube application built with React, Three.js, and React Three Fiber.
 
 ## Features
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+- 3D Rubik's Cube with realistic rendering
+- Interactive controls for cube manipulation
+- Face rotation controls
+- Cube scrambling
+- Reset functionality
+- Responsive design for desktop and mobile devices
+
+## Technologies Used
+
+- React
+- Three.js for 3D rendering
+- React Three Fiber for integrating Three.js with React
+- React Three Drei for additional Three.js helpers
 
 ## Getting Started
 
-In the project directory, you can run:
+### Prerequisites
 
-### `npm start`
+- Node.js
+- npm
 
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Installation
 
-### `npm test`
+1. Clone the repository
+2. Install dependencies:
 
-Launches the test runner in interactive watch mode.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-## Customization
-
-### Colors
-
-The main brand colors are defined as CSS variables in `src/App.css`:
-
-```css
-:root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-}
+```bash
+npm install
 ```
 
-### Components
+3. Start the development server:
 
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
+```bash
+npm start
+```
 
-Common components include:
-- Buttons (`.btn`, `.btn-large`)
-- Container (`.container`)
-- Navigation (`.navbar`)
-- Typography (`.title`, `.subtitle`, `.description`)
+4. Open [http://localhost:3000](http://localhost:3000) to view the application in your browser.
 
-## Learn More
+## Usage
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Cube Controls
 
-### Code Splitting
+- **View Controls**: Use the buttons to rotate the cube view left, right, up, or down.
+- **Face Controls**: Use the buttons to rotate individual faces of the cube (Top, Bottom, Front, Back, Left, Right).
+- **Actions**: Use the Reset button to return the cube to its solved state, or the Scramble button to randomly mix up the cube.
+- **Mouse Controls**: You can also use the mouse to rotate the cube (click and drag), zoom (scroll), and pan (right-click and drag).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Project Structure
 
-### Analyzing the Bundle Size
+```
+src/
+├── components/
+│   ├── Controls/
+│   │   └── CubeControls.js
+│   ├── RubiksCube/
+│   │   ├── Cubelet.js
+│   │   └── RubiksCube.js
+│   └── UI/
+│       └── ControlPanel.js
+├── hooks/
+│   └── useCubeState.js
+├── App.css
+├── App.js
+├── index.css
+└── index.js
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Further Development
 
-### Making a Progressive Web App
+- Add timer functionality for speedcubing practice
+- Implement cube solving algorithms
+- Add animation effects for cube rotations
+- Implement touch controls for mobile devices
+- Add sound effects
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## License
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License.
