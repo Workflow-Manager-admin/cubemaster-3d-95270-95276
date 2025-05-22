@@ -17,11 +17,20 @@ const DEFAULT_COLOR = '#111111';
 const RubiksCube = ({ cubeState, rotation }) => {
   const groupRef = useRef();
   
+  // Target rotation state
+  const targetRotation = useRef({ x: 0, y: 0 });
+  
+  // Update target rotation when rotation prop changes
+  useEffect(() => {
+    targetRotation.current = rotation;
+  }, [rotation]);
+  
   // Use frame to apply smooth rotation animation
   useFrame(() => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += (rotation.y - groupRef.current.rotation.y) * 0.1;
-      groupRef.current.rotation.x += (rotation.x - groupRef.current.rotation.x) * 0.1;
+      // Apply smooth damping to rotation
+      groupRef.current.rotation.y += (targetRotation.current.y - groupRef.current.rotation.y) * 0.1;
+      groupRef.current.rotation.x += (targetRotation.current.x - groupRef.current.rotation.x) * 0.1;
     }
   });
   
