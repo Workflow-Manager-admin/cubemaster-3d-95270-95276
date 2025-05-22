@@ -1,10 +1,11 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import './App.css';
 
 import RubiksCube from './components/RubiksCube/RubiksCube';
 import ControlPanel from './components/UI/ControlPanel';
 import useCubeState from './hooks/useCubeState';
+import { ErrorBoundary } from 'react-error-boundary';
 
 function App() {
   // Use our custom hook for managing Rubik's cube state
