@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { ErrorBoundary } from 'react-error-boundary';
 import './App.css';
@@ -6,6 +6,16 @@ import './App.css';
 import RubiksCube from './components/RubiksCube/RubiksCube';
 import ControlPanel from './components/UI/ControlPanel';
 import useCubeState from './hooks/useCubeState';
+
+function ErrorFallback({ error }) {
+  return (
+    <div className="error-message">
+      <p>Something went wrong rendering the cube:</p>
+      <pre>{error.message || 'Unknown error'}</pre>
+      <p>Please refresh the page to try again.</p>
+    </div>
+  );
+}
 
 function App() {
   // Use our custom hook for managing Rubik's cube state
@@ -40,17 +50,15 @@ function App() {
 
       <main className="main-content">
         <div className="cube-container">
-          <ErrorBoundary
-            fallback={
-              <div className="error-message">
-                There was an error loading the 3D cube. Please refresh the page.
-              </div>
-            }
-          >
-            <Canvas shadows dpr={[1, 2]} camera={{ position: [0, 0, 7], fov: 45 }}>
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Canvas 
+              shadows 
+              camera={{ position: [0, 0, 7], fov: 45 }}
+              style={{ background: '#1A1A1A' }}
+            >
+              <ambientLight intensity={0.5} />
+              <pointLight position={[10, 10, 10]} intensity={0.8} />
               <Suspense fallback={null}>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} intensity={0.8} castShadow />
                 <RubiksCube cubeState={cubeState} rotation={rotation} />
               </Suspense>
             </Canvas>
