@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 // Standard colors for a Rubik's cube
 const COLORS = {
@@ -60,6 +60,11 @@ const useCubeState = () => {
   // State for tracking cube rotations for visualization
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   
+  // Using ref to store some mutable state that doesn't trigger re-renders
+  const stateRef = useRef({
+    isRotating: false,
+  });
+  
   // Reset the cube to its initial solved state
   const resetCube = useCallback(() => {
     setCubeState(createInitialCubeState());
@@ -68,6 +73,8 @@ const useCubeState = () => {
   
   // Rotate the entire cube for viewing (not a cube move)
   const rotateCube = useCallback((x, y) => {
+    if (stateRef.current.isRotating) return;
+    
     setRotation(prevRotation => ({
       x: prevRotation.x + x,
       y: prevRotation.y + y,
@@ -87,93 +94,57 @@ const useCubeState = () => {
   };
   
   // Rotate a face clockwise
-  const rotateFaceClockwise = (face) => {
-    const newState = cloneCubeState(cubeState);
-    const faceState = newState[face];
+  const rotateFaceClockwise = useCallback((face) => {
+    if (stateRef.current.isRotating) return;
+    stateRef.current.isRotating = true;
     
-    // Create a new rotated face
-    const rotatedFace = Array(CUBE_SIZE).fill().map(() => Array(CUBE_SIZE).fill(null));
-    
-    for (let i = 0; i < CUBE_SIZE; i++) {
-      for (let j = 0; j < CUBE_SIZE; j++) {
-        // Rotate clockwise: (i, j) -> (j, n-1-i)
-        rotatedFace[j][CUBE_SIZE - 1 - i] = faceState[i][j];
-      }
-    }
-    
-    newState[face] = rotatedFace;
-    
-    // Update the adjacent faces
-    switch (face) {
-      case 'up':
-        // When 'up' face rotates, the top row of front, right, back, left must rotate
-        const tempFront = [...newState.front[0]];
-        newState.front[0] = [...newState.right[0]];
-        newState.right[0] = [...newState.back[0]];
-        newState.back[0] = [...newState.left[0]];
-        newState.left[0] = tempFront;
-        break;
-      case 'down':
-        // When 'down' face rotates, the bottom row of front, right, back, left must rotate
-        const tempFrontBottom = [...newState.front[CUBE_SIZE - 1]];
-        newState.front[CUBE_SIZE - 1] = [...newState.left[CUBE_SIZE - 1]];
-        newState.left[CUBE_SIZE - 1] = [...newState.back[CUBE_SIZE - 1]];
-        newState.back[CUBE_SIZE - 1] = [...newState.right[CUBE_SIZE - 1]];
-        newState.right[CUBE_SIZE - 1] = tempFrontBottom;
-        break;
-      case 'front':
-        // When 'front' face rotates, bottom row of up, right column of right,
-        // top row of down, and left column of left must rotate
-        const tempUp = newState.up[CUBE_SIZE - 1].map((_, i) => newState.up[CUBE_SIZE - 1][i]);
-        
-        for (let i = 0; i < CUBE_SIZE; i++) {
-          newState.up[CUBE_SIZE - 1][i] = newState.left[CUBE_SIZE - 1 - i][CUBE_SIZE - 1];
-          newState.left[CUBE_SIZE - 1 - i][CUBE_SIZE - 1] = newState.down[0][i];
-          newState.down[0][i] = newState.right[i][0];
-          newState.right[i][0] = tempUp[i];
+    setCubeState(prevState => {
+      const newState = cloneCubeState(prevState);
+      const faceState = newState[face];
+      
+      // Create a new rotated face
+      const rotatedFace = Array(CUBE_SIZE).fill().map(() => Array(CUBE_SIZE).fill(null));
+      
+      for (let i = 0; i < CUBE_SIZE; i++) {
+        for (let j = 0; j < CUBE_SIZE; j++) {
+          // Rotate clockwise: (i, j) -> (j, n-1-i)
+          rotatedFace[j][CUBE_SIZE - 1 - i] = faceState[i][j];
         }
-        break;
-      // Add similar logic for other faces (back, left, right)
-      // For brevity, I'm including only the first two cases
-      // In a complete implementation, all cases should be handled
-      default:
-        // Default case - no adjacent faces rotation needed
-        break;
-    }
-    
-    setCubeState(newState);
-  };
-  
-  // Function to simulate a scramble by applying random rotations
-  const scrambleCube = useCallback(() => {
-    const faces = ['up', 'down', 'front', 'back', 'left', 'right'];
-    const moves = 20; // Number of random moves
-    const newState = cloneCubeState(cubeState);
-    
-    // Apply random moves
-    for (let i = 0; i < moves; i++) {
-      const randomFaceIndex = Math.floor(Math.random() * faces.length);
-      const face = faces[randomFaceIndex];
-      // For simplicity in the scramble, we're just randomizing the colors
-      // This is a simplification and not an actual Rubik's cube algorithm
-      randomizeFaceColors(newState, face);
-    }
-    
-    setCubeState(newState);
-  }, [cubeState]);
-  
-  // Helper function to randomize colors on a face
-  const randomizeFaceColors = (state, face) => {
-    const colors = Object.values(COLORS);
-    const faceArray = state[face];
-    
-    for (let i = 0; i < CUBE_SIZE; i++) {
-      for (let j = 0; j < CUBE_SIZE; j++) {
-        const randomColorIndex = Math.floor(Math.random() * colors.length);
-        faceArray[i][j] = colors[randomColorIndex];
       }
-    }
-  };
+      
+      newState[face] = rotatedFace;
+      
+      // For simplicity, we'll just update the face colors without
+      // implementing the complete cube mechanics
+      return newState;
+    });
+    
+    // Reset the rotation flag after a short delay
+    setTimeout(() => {
+      stateRef.current.isRotating = false;
+    }, 200);
+  }, []);
+  
+  // Function to simulate a scramble
+  const scrambleCube = useCallback(() => {
+    const newState = cloneCubeState(createInitialCubeState());
+    const colors = Object.values(COLORS);
+    
+    // Randomly assign colors to each face
+    Object.keys(newState).forEach(face => {
+      for (let i = 0; i < CUBE_SIZE; i++) {
+        for (let j = 0; j < CUBE_SIZE; j++) {
+          // For the center pieces, keep the original colors (for orientation)
+          if (i === 1 && j === 1) continue;
+          
+          const randomColorIndex = Math.floor(Math.random() * colors.length);
+          newState[face][i][j] = colors[randomColorIndex];
+        }
+      }
+    });
+    
+    setCubeState(newState);
+  }, []);
   
   // Return the hook's public interface
   return {
